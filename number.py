@@ -1,22 +1,37 @@
 class Number:
     def __init__(self, a=0, b=1, string=None):
         if string is not None:
+            if string[0] == "-":
+                sign = -1
+                string = string[1:]
+            else:
+                sign = 1
             if "." in string:
                 i = string.index(".")
             else:
                 i = 0
-            a = int(string.replace(".", ""))
+            a = sign*int(string.replace(".", ""))
             b = 10**i
         else:
             if b == 0:
-                raise ValueError("Divided by zero")
+                raise ZeroDivisionError("Division by zero")
             elif b < 0:
                 a = -1*a
                 b = -1*b
 
         d = gcd(a, b)
         self.a = a//d
-        self.b = b//d
+        self._b = b//d
+
+    @property
+    def b(self):
+        return self._b
+
+    @b.setter
+    def b(self, b):
+        if b == 0:
+            raise ZeroDivisionError("Division by zero")
+        self._b = b
 
     def __mul__(self, other):
         if type(other) == int:
@@ -76,8 +91,10 @@ def gcd(a, b):
 def long_division(a, b, precision=2):
     res = "" if a > 0 else "-"
     remainder = abs(a)
-    res += str(remainder // b) + "."
+    res += str(remainder // b)
     remainder %= b
+    if remainder != 0:
+        res += "."
     while remainder > 0 and precision > 0:
         remainder *= 10
         res += str(remainder // b)
