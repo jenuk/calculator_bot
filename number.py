@@ -83,6 +83,92 @@ class Number:
     def __repr__(self):
         return "Number({}, {})".format(self.a, self.b)
 
+    def __format__(self, spec):
+        # default values
+        fill = " "
+        align = ">"
+        width = 0
+        sign = "-"
+        grouping = ""
+        alternate = False
+        precision = 3
+        kind = "f"
+
+        # evaluating the format specifier
+        if len(spec) > 1 and spec[1] in "<=>^":
+            fill = spec[0]
+            align = spec[1]
+            spec = spec[2:]
+
+        if len(spec) != 0 and spec[0] in "+- ":
+            sign = spec[0]
+            spec = spec[1:]
+
+        if len(spec) != 0 and spec[0] == "#":
+            alternate = True
+            spec = spec[1:]
+
+        if len(spec) != 0 and spec[0] == "0":
+            fill = "0"
+            align = "="
+
+        if len(spec) != 0 and spec[0].isdigit():
+            for k, ch in enumerate(spec):
+                if not ch.isdigit():
+                    break
+            width = int(spec[:k])
+            spec = spec[k:]
+
+        if len(spec) != 0 and spec[0] in ",_'":
+            grouping = spec[0]
+            spec = spec[1:]
+
+        if len(spec) > 1 and spec[0] == ".":
+            for k, ch in enumerate(spec[1:]):
+                if not ch.isdigit():
+                    break
+            else:
+                k = len(spec)-1
+            precision = int(spec[1:k+1])
+            spec = spec[k+1:]
+
+        if len(spec) != 0 and spec[0] in "fF":
+            kind = spec[0]
+            spec = spec[1:]
+
+        if len(spec) > 0:
+            raise ValueError("Unknown format code '{}' for object of type 'float'".format(spec[0]))
+
+        # formatting the number
+        res = long_division(self.a, self.b, precision)
+        if alternate and "." not in res:
+            res += "."
+
+        if grouping != "":
+            pos = res.index(".") if "." in res else len(res)
+            for k in range(pos-3, 0, -3):
+                res = res[:k] + grouping + res[k:]
+
+        if sign != "-" and res[0] != "-":
+            res = sign + res
+
+        if len(res) < width:
+            l = width-len(res)
+            if align == ">":
+                res = fill*l + res
+            elif align == "<":
+                res = res + fill*l
+            elif align == "=":
+                if res[0].isdigit():
+                    res = fill*l + res
+                else:
+                    res = res[0] + fill*l + res[1:]
+            elif align == "^":
+                res = fill*(l//2) + res + fill*(l - l//2)
+
+        return res
+
+
 def gcd(a, b):
         while b != 0:
             a, b = b, a%b
