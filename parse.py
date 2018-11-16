@@ -1,5 +1,5 @@
 from tree import *
-from number import Number
+from number import Rational
 from error import MalformedExpressionException
 
 def parse(expression):
@@ -18,13 +18,13 @@ def parse(expression):
             last_token = "close"
             token_list.append([last_token, ch])
         elif last_token == "open" and ch == "-":
-            last_token = "number"
+            last_token = "rational"
             token_list.append([last_token, ch])
         elif ch in "01234567890.":
-            if last_token == "number":
+            if last_token == "rational":
                 token_list[-1][1] += ch
             else:
-                last_token = "number"
+                last_token = "rational"
                 token_list.append([last_token, ch])
         elif ch in ops:
             last_token = "operator"
@@ -48,8 +48,8 @@ def parse(expression):
             root = root_stack[-1]
             continue
 
-        if kind == "number":
-            node = NumberNode(Number(string=token))
+        if kind == "rational":
+            node = NumberNode(Rational(string=token))
         elif kind == "operator":
             node = operator_dict[token]()
 

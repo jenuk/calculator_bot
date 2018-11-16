@@ -1,4 +1,4 @@
-class Number:
+class Rational:
     def __init__(self, a=0, b=1, string=None):
         if string is not None:
             if string[0] == "-":
@@ -35,17 +35,17 @@ class Number:
 
     def __mul__(self, other):
         if type(other) == int:
-            return Number(self.a * other, self.b)
-        elif type(other) == Number:
-            return Number(self.a * other.a, self.b * other.b)
+            return Rational(self.a * other, self.b)
+        elif type(other) == Rational:
+            return Rational(self.a * other.a, self.b * other.b)
         else:
             raise TypeError("unsupported operand type(s) for *: '{}' and '{}'".format(type(self), type(other)))
 
     def __add__(self, other):
         if type(other) == int:
-            return Number(self.a + other*self.b, self.b)
-        elif type(other) == Number:
-            return Number(self.a*other.b + other.a*self.b, self.b * other.b)
+            return Rational(self.a + other*self.b, self.b)
+        elif type(other) == Rational:
+            return Rational(self.a*other.b + other.a*self.b, self.b * other.b)
         else:
             raise TypeError("unsupported operand type(s) for +: '{}' and '{}'".format(type(self), type(other)))
 
@@ -54,17 +54,17 @@ class Number:
 
     def __truediv__(self, other):
         if type(other) == int:
-            return Number(self.a, self.b * other)
-        elif type(other) == Number:
-            return Number(self.a*other.b, self.b * other.a)
+            return Rational(self.a, self.b * other)
+        elif type(other) == Rational:
+            return Rational(self.a*other.b, self.b * other.a)
         else:
             raise TypeError("unsupported operand type(s) for +: '{}' and '{}'".format(type(self), type(other)))
 
     def __rtruediv__(self, other):
         if type(other) == int:
-            return Number(self.b * other, self.a)
-        elif type(other) == Number:
-            return Number(self.b*other.a, self.a * other.b)
+            return Rational(self.b * other, self.a)
+        elif type(other) == Rational:
+            return Rational(self.b*other.a, self.a * other.b)
         else:
             raise TypeError("unsupported operand type(s) for +: '{}' and '{}'".format(type(self), type(other)))
 
@@ -75,13 +75,13 @@ class Number:
         return -other + self
 
     def __neg__(self):
-        return Number(-self.a, self.b)
+        return Rational(-self.a, self.b)
 
     def __str__(self):
         return long_division(self.a, self.b, precision=3)
 
     def __repr__(self):
-        return "Number({}, {})".format(self.a, self.b)
+        return "Rational({}, {})".format(self.a, self.b)
 
     def __format__(self, spec):
         # default values
@@ -139,7 +139,7 @@ class Number:
         if len(spec) > 0:
             raise ValueError("Unknown format code '{}' for object of type 'float'".format(spec[0]))
 
-        # formatting the number
+        # formatting the Rational
         res = long_division(self.a, self.b, precision)
         if alternate and "." not in res:
             res += "."
