@@ -1,5 +1,5 @@
 from tree import *
-from number import Rational
+from rational import Rational
 from error import MalformedExpressionException
 
 def parse(expression):
