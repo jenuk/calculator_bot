@@ -78,7 +78,3 @@ class BasicBot:
                 print(".", end="", flush=True)
             self.get_updates(offset=self.offset)
         print()
-
-
-if __name__ == '__main__':
-    bot = BasicBot(token)

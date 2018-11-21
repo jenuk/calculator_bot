@@ -16,7 +16,10 @@ class CalculatorBot(BasicBot):
                     "This bot can evaluate simple mathematical expression.")
                 options["parse_mode"] = "HTML"
             if message["text"].startswith("/help"):
-                text = ("You can use decimal numbers, parentheses and the operators *, /, +, -.\n"
+                text = ("You can use decimal numbers, parentheses and the operators *, /, +, -."
+                    "You can also perform multiple calculations in one message by placing the expressions in $...$.\n"
+                    "For example: "
+                    "'The area of a rectangle with side lengths 3 and 4 is $3*4$, the circumference is $2*(3+4)$'\n\n"
                     "Request additional operations with /request and a description of the desired change.")
             if message["text"].startswith("/request"):
                 text = "Your suggestion was saved for later review."
@@ -59,9 +62,7 @@ class CalculatorBot(BasicBot):
         self.send_message(**options)
 
     def calculate(self, expression):
+        if expression.lower().startswith("the answer"):
+            return 42, expression
         tree = parse(expression)
         return tree.apply(), tree
-
-if __name__ == '__main__':
-    bot = CalculatorBot(token)
-    bot.loop(3)
