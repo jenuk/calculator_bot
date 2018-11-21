@@ -23,17 +23,43 @@ class CalculatorBot(BasicBot):
                 with open("suggestions.txt", "a") as file:
                     file.write("{}: {}".format(message["from"]["id"], message["text"][9:]))
         else:
-            try:
-                res, tree = self.calculate(message["text"])
-                text = str(tree) + "\n" + str(res)
-            except ArithmeticError as e:
-                text = "There was an error while evaulating your expression: {}".format(e)
+            orig = message["text"]
+            symb = "$"
+            text = ""
+            poss = []
+            err = False
+
+            if symb not in orig:
+                orig = symb + orig + symb
+
+            for k in range(len(orig)):
+                if orig[k] == symb:
+                    poss.append(k)
+
+            if len(poss) % 2 != 0:
+                text = "Uneven number of {}s".format(symb)
+                poss = []
+                err = True
+
+            last = 0
+            for k in range(0, len(poss)-1, 2):
+                try:
+                    num, tree = self.calculate(orig[poss[k]+1:poss[k+1]])
+                    text += orig[last:poss[k]] + "{} = {}".format(tree, num)
+                    last = poss[k+1]+1
+                except ArithmeticError as e:
+                    text = "There was an error while evaulating your expression: {}".format(e)
+                    err = True
+                    break
+
+            if not err:
+                text += orig[last:]
+
         options["text"] = text
         self.send_message(**options)
 
     def calculate(self, expression):
         tree = parse(expression)
-
         return tree.apply(), tree
 
 if __name__ == '__main__':
