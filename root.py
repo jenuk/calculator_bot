@@ -13,7 +13,7 @@ class Root:
         pass
 
     def __mul__(self, other):
-        if type(other) == int or type(other) == Rational:
+        if type(other) == int or type(other) == rational.Rational:
             return Root(self.n, self.radicand * (other**self.n))
         elif type(other) == Root:
             d = gcd(self.n, other.n)
@@ -24,7 +24,7 @@ class Root:
     __rmul__ = __mul__
 
     def __truediv__(self, other):
-        if type(other) == int or type(other) == Rational:
+        if type(other) == int or type(other) == rational.Rational:
             return Root(self.n, self.radicand / (other**self.n))
         elif type(other) == Root:
             d = gcd(self.n, other.n)
@@ -33,7 +33,7 @@ class Root:
             raise TypeError("unsupported operand type(s) for /: '{}' and '{}'".format(type(self), type(other)))
 
     def __rtruediv__(self, other):
-        if type(other) == int or type(other) == Rational:
+        if type(other) == int or type(other) == rational.Rational:
             return Root(self.n, (other**self.n) / self.radicand)
         elif type(other) == Root:
             d = gcd(self.n, other.n)
@@ -45,7 +45,7 @@ class Root:
         if type(other) == int:
             d = gcd(self.n, other)
             return Root(self.n // d, self.radicand**(other // d))
-        elif type(other) == Rational:
+        elif type(other) == rational.Rational:
             power = other * Rational(1, self.n)
             return Root(power.b, self.radicand**power.a)
         else:
