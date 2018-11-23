@@ -23,15 +23,17 @@ class BasicBot:
         if values is None or len(values) == 0:
             req = url
         else:
-            data = urllib.parse.urlencode(values).encode("utf-8")
-            req = urllib.request.Request(url, data)
-
+            data = json.dumps(values).encode('utf8')
+            req = urllib.request.Request(url, data=data, headers={'content-type': 'application/json'})
         try:
             with urllib.request.urlopen(req) as respone:
                 result = json.loads(respone.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
             # probably should do some real logging here
             print(self.base + command)
+            print(values)
+            print(e.read().decode("utf-8"))
+            print("\n\n\n")
             raise e
 
         return result
@@ -47,6 +49,15 @@ class BasicBot:
 
     def send_message(self, **kwargs):
         return self.method("sendMessage", **kwargs)
+
+    def answer_inline_query(self, querry, results):
+        if type(results) == dict:
+            results = [results]
+        options = {"inline_query_id": querry["id"],
+                   "results": results,}
+
+        return self.method("answerInlineQuery", **options)
+
 
     def register(self, typ, func):
         self.handler[typ] = func
@@ -64,7 +75,7 @@ class BasicBot:
             it = range(iterations)
 
         for k in it:
-            updates = self.get_updates(timeout=120, allowed_updates=self.handler.keys())
+            updates = self.get_updates(timeout=120, allowed_updates=list(self.handler.keys()))
             if not updates["ok"]:
                 raise RuntimeError
             updates = updates["result"]
@@ -73,8 +84,10 @@ class BasicBot:
             for update in updates:
                 keys = list(update.keys())
                 typ = keys[1 ^ keys.index("update_id")]
-                self.handler[typ](update[typ])
+                if self.handler[typ](update[typ]):
+                    print(".", end="", flush=True)
+                else:
+                    print("*", end="", flush=True)
                 self.offset = update["update_id"] + 1
-                print(".", end="", flush=True)
             self.get_updates(offset=self.offset)
         print()
