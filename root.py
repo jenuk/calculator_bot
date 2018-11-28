@@ -10,7 +10,27 @@ class Root:
             self.radicand = radicand
 
     def approximate(self, precision):
-        pass
+        if type(self.radicand) == int:
+            initial = rational.Rational(self.radicand, 1)
+            initial.a *= 10**(self.n*precision)
+            initial.b *= 10**(self.n*precision)
+        else:
+            initial = self.radicand.approximate(precision*self.n)
+
+        upper, lower = 10**(len(str(initial.a))), 0
+        while upper - lower > 1:
+            curr = (upper+lower)//2
+            pot = curr**self.n
+            if pot == initial.a:
+                upper, lower = curr, curr
+            elif pot > initial.a:
+                upper = curr
+            else:
+                lower = curr
+
+        res = rational.Rational(lower, 10**precision)
+
+        return res
 
     def __mul__(self, other):
         if type(other) == int or type(other) == rational.Rational:
@@ -51,5 +71,22 @@ class Root:
         else:
             raise TypeError("unsupported operand type(s) for **: '{}' and '{}'".format(type(self), type(other)))
 
+    def __str__(self):
+        return str(self.approximate(3))
+
     def __repr__(self):
         return "Root({}, {})".format(self.n, repr(self.radicand))
+
+    def __format__(self, spec):
+        if "." not in spec:
+            return self.approximate(3).__format__(spec)
+
+        i = spec.index(".")
+        for k in range(i+1, len(spec)):
+            if not spec[k].isdigit():
+                break
+        else:
+            k = len(spec)
+
+        prec = int(spec[i+1:k])
+        return self.approximate(prec).__format__(spec)

@@ -31,7 +31,12 @@ class Rational:
         self.b = self.b//d
 
     def approximate(self, precision):
-        return Rational(string=self.as_string(precision))
+        approx = Rational(string=self.as_string(precision))
+        factor = 10**precision // approx.b
+        approx.a *= factor
+        approx.b *= factor
+
+        return approx
 
     def as_string(self, precision):
         res = "" if self.a > 0 else "-"
