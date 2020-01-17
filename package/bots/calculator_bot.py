@@ -1,6 +1,5 @@
-from _token import token
-from basic_bot import BasicBot
-from parse import parse
+from .basic_bot import BasicBot
+from .parse import parse
 
 class CalculatorBot(BasicBot):
     def __init__(self, token):

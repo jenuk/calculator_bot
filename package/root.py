@@ -1,5 +1,5 @@
-import rational
-from utilities import gcd
+from . import rational
+from .utilities import gcd
 
 class Root:
     def __init__(self, n, radicand):

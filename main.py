@@ -1,6 +1,6 @@
 from _token import token
 import sys
-from calculator_bot import CalculatorBot
+from package.bots.calculator_bot import CalculatorBot
 
 try:
     n = int(sys.argv[1])

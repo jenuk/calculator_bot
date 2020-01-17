@@ -1,4 +1,3 @@
-from _token import token
 import urllib.parse
 import urllib.request
 import urllib.error

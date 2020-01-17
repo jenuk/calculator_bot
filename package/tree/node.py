@@ -1,4 +1,4 @@
-from error import MalformedExpressionException
+from ..error import MalformedExpressionException
 
 operator_dict = {}
 
