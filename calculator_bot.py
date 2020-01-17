@@ -74,7 +74,7 @@ class CalculatorBot(BasicBot):
                 num, tree = self.calculate(orig[poss[k]+1:poss[k+1]])
                 text += orig[last:poss[k]] + "{} = {}".format(tree, num)
                 last = poss[k+1]+1
-            except ArithmeticError as e:
+            except (ArithmeticError, TypeError) as e:
                 text = "There was an error while evaulating your expression: {}".format(e)
                 return text, False
 
