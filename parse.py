@@ -1,11 +1,11 @@
-from tree import *
+import tree
 from rational import Rational
 from error import MalformedExpressionException
 
 def parse(expression):
-    ops = list(operator_dict.keys())
-    root_stack = [ParenthesesNode(True)]
-    root = root_stack[-1]
+    ops = list(tree.operator_dict.keys())
+    root = tree.nodes.ParenthesesNode(True)
+    root_stack = [root]
 
     expression = expression.replace(" ", "")
     token_list = []
@@ -33,10 +33,12 @@ def parse(expression):
         else:
             raise MalformedExpressionException("Undefined symbol: {}".format(ch))
 
+
+
     for kind, token in token_list:
 
         if kind == "open":
-            node = ParenthesesNode()
+            node = tree.nodes.ParenthesesNode()
             root.insert(node)
             root_stack.append(node)
             root = node
@@ -50,11 +52,11 @@ def parse(expression):
             root = root_stack[-1]
 
         elif kind == "rational":
-            node = NumberNode(Rational(string=token))
+            node = tree.nodes.NumberNode(Rational(string=token))
             root.insert(node)
 
         elif kind == "operator":
-            node = operator_dict[token]()
+            node = tree.operator_dict[token]()
             root.insert(node)
 
 
