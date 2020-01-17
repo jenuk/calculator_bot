@@ -10,6 +10,7 @@ def parse(expression):
     expression = expression.replace(" ", "")
     token_list = []
     last_token = "open"
+
     for ch in expression:
         if ch == "(":
             last_token = "open"
@@ -33,12 +34,13 @@ def parse(expression):
             raise MalformedExpressionException("Undefined symbol: {}".format(ch))
 
     for kind, token in token_list:
+
         if kind == "open":
             node = ParenthesesNode()
             root.insert(node)
             root_stack.append(node)
             root = node
-            continue
+
         elif kind == "close":
             if not root.verify():
                 raise MalformedExpressionException("Incomplete expression in a parentheses")
@@ -46,14 +48,15 @@ def parse(expression):
             if len(root_stack) == 0:
                 raise MalformedExpressionException("Too many closing parentheses")
             root = root_stack[-1]
-            continue
 
-        if kind == "rational":
+        elif kind == "rational":
             node = NumberNode(Rational(string=token))
+            root.insert(node)
+
         elif kind == "operator":
             node = operator_dict[token]()
+            root.insert(node)
 
-        root.insert(node)
 
     if len(root_stack) > 1:
         raise MalformedExpressionException("Too many opening parentheses")
