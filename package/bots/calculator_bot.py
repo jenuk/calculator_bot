@@ -1,5 +1,6 @@
 from .basic_bot import BasicBot
 from .parse import parse
+from ..visualize.visualize import draw
 
 class CalculatorBot(BasicBot):
     def __init__(self, token):
@@ -71,6 +72,7 @@ class CalculatorBot(BasicBot):
         for k in range(0, len(poss)-1, 2):
             try:
                 num, tree = self.calculate(orig[poss[k]+1:poss[k+1]])
+                draw(tree)
                 text += orig[last:poss[k]] + "{} = {}".format(tree, num)
                 last = poss[k+1]+1
             except (ArithmeticError, TypeError) as e:
