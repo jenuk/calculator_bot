@@ -4,7 +4,7 @@ from .utilities import gcd
 class Root:
     def __init__(self, n, radicand):
         if type(n) != int:
-            raise TypeError("unsupported type '{}' for root".format(type(int)))
+            raise TypeError("unsupported type '{}' for root".format(type(n)))
         if type(radicand) == Root:
             self.n = n * radicand.n
             self.radicand = radicand.radicand

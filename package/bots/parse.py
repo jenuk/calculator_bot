@@ -1,6 +1,6 @@
 from .. import tree
-from ..rational import Rational
-from ..error import MalformedExpressionException
+from ..extra.rational import Rational
+from ..extra.error import MalformedExpressionException
 
 def parse(expression):
     ops = list(tree.operator_dict.keys())
