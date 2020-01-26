@@ -1,7 +1,4 @@
-import urllib.parse
-import urllib.request
-import urllib.error
-import json
+import requests
 from itertools import count
 
 class BasicBot:
@@ -19,21 +16,22 @@ class BasicBot:
 
     def request(self, command, values=None):
         url = self.base + command
+
         if values is None or len(values) == 0:
-            req = url
+            response = requests.get(url)
         else:
-            data = json.dumps(values).encode('utf8')
-            req = urllib.request.Request(url, data=data, headers={'content-type': 'application/json'})
-        try:
-            with urllib.request.urlopen(req) as respone:
-                result = json.loads(respone.read().decode("utf-8"))
-        except urllib.error.HTTPError as e:
-            # probably should do some real logging here
+            response = requests.post(url, json=values)
+
+        if response:
+            response.encoding = "utf-8"
+            result = response.json()
+        else:
+            print("\n\n")
+            print(response.status_code, response.reason)
             print(self.base + command)
             print(values)
-            print(e.read().decode("utf-8"))
-            print("\n\n\n")
-            raise e
+            print("\n\n")
+            response.raise_for_status()
 
         return result
 
@@ -74,7 +72,7 @@ class BasicBot:
             it = range(iterations)
 
         for k in it:
-            updates = self.get_updates(timeout=120, allowed_updates=list(self.handler.keys()))
+            updates = self.get_updates(timeout=60, allowed_updates=list(self.handler.keys()))
             if not updates["ok"]:
                 raise RuntimeError
             updates = updates["result"]
