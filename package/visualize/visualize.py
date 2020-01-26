@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw
+from ..tree.nodes.number import NumberNode
 
 padding = (50, 50)
 margin = (50, 50)
@@ -30,7 +31,9 @@ def make_shapes(tree, draw):
 
     draw.ellipse((tree.pos[0]-node_dim[0]//2, tree.pos[1]-node_dim[1]//2,
                   tree.pos[0]+node_dim[0]//2, tree.pos[1]+node_dim[1]//2), fill=1, outline=0)
-    draw.text((tree.pos[0]-3, tree.pos[1]-6), tree.symb, fill=0)
+    s = tree.symb if type(tree) != NumberNode else str(tree)
+    size = draw.textsize(s)
+    draw.text((tree.pos[0]-size[0]//2, tree.pos[1]-size[1]//2), s, fill=0)
 
 def draw(tree):
     width, height = calculate_pos(tree, padding)
