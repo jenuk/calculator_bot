@@ -20,7 +20,7 @@ class BasicBot:
         if values is None or len(values) == 0:
             response = requests.get(url)
         elif filename is not None:
-            files = {"photo": open("./images/"+filename, "rb").read()}
+            files = {"photo": open("./images/"+filename, "rb")}
             response = requests.post(url, files=files, data=values)
         else:
             response = requests.post(url, json=values)

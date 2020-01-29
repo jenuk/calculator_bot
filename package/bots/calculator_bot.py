@@ -16,7 +16,7 @@ class CalculatorBot(BasicBot):
                     "This bot can evaluate simple mathematical expression.")
                 options["parse_mode"] = "HTML"
             elif message["text"].startswith("/help"):
-                text = ("You can use decimal numbers, parentheses and the operators *, /, +, -, ^, %."
+                text = ("You can use decimal numbers, parentheses and the operators *, /, +, -, ^, %. "
                     "You can also perform multiple calculations in one message by placing the expressions in $...$.\n"
                     "For example: "
                     "'The area of a rectangle with side lengths 3 and 4 is $3*4$, the circumference is $2*(3+4)$'\n\n"
@@ -25,6 +25,9 @@ class CalculatorBot(BasicBot):
                 text = "Your suggestion was saved for later review."
                 with open("suggestions.txt", "a") as file:
                     file.write("{}: {}\n".format(message["from"]["id"], message["text"][9:]))
+            elif message["text"].startswith("/debug"):
+                self.send_photo("test.png", **options)
+                return True
             else:
                 text = "I did not understand your querry"
                 sucess = False
