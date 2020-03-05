@@ -11,6 +11,7 @@ class Node:
 
     def __init__(self):
         self.children = []
+        self.pos = (0, 0) # used for drawing the graph
 
     def apply(self):
         raise NotImplementedError()

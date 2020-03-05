@@ -1,7 +1,7 @@
 from ..node import Node
 
 class ParenthesesNode(Node):
-    symb = "()"
+    symb = "( )"
     priority = 100
     arguments = 1
     acts_as_number = True

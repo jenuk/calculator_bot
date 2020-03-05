@@ -1,5 +1,6 @@
 from .basic_bot import BasicBot
 from .parse import parse
+from ..visualize.visualize import draw
 
 class CalculatorBot(BasicBot):
     def __init__(self, token):
@@ -26,7 +27,16 @@ class CalculatorBot(BasicBot):
                 with open("suggestions.txt", "a") as file:
                     file.write("{}: {}\n".format(message["from"]["id"], message["text"][9:]))
             elif message["text"].startswith("/debug"):
-                self.send_photo("test.png", **options)
+                try:
+                    num, tree = self.calculate(message["text"][7:])
+                except (ArithmeticError, TypeError) as e:
+                    options["text"] = "There was an error while evaulating your expression: {}".format(e)
+                    self.send_message(**options)
+                    return False
+
+                draw(tree)
+                options["caption"] = f"{message['text'][7:]} = {num}"
+                self.send_photo("graph.png", **options)
                 return True
             else:
                 text = "I did not understand your querry"
