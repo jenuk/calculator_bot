@@ -14,13 +14,12 @@ class BasicBot:
         self.offset = 0
         self.handler = dict()
 
-    def request(self, command, values=None, filename=None):
+    def request(self, command, values=None, files=None):
         url = self.base + command
 
         if values is None or len(values) == 0:
             response = requests.get(url)
-        elif filename is not None:
-            files = {"photo": open("./images/"+filename, "rb")}
+        elif files is not None:
             response = requests.post(url, files=files, data=values)
         else:
             response = requests.post(url, json=values)
@@ -51,7 +50,8 @@ class BasicBot:
         return self.method("sendMessage", **kwargs)
 
     def send_photo(self, filename, **kwargs):
-        return self.request("sendPhoto", kwargs, filename=filename)
+        files = {"photo": open("./images/"+filename, "rb")}
+        return self.request("sendPhoto", kwargs, files=files)
 
     def answer_inline_query(self, querry, results):
         if type(results) == dict:
