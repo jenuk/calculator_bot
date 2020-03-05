@@ -43,4 +43,4 @@ def draw(tree):
     make_shapes(tree, draw)
     del draw
 
-    im.save("drawing.png")
+    im.save("images/graph.png")
