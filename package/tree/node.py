@@ -17,8 +17,11 @@ class Node:
         raise NotImplementedError()
 
     def simplify(self):
-        for child in self.children:
-            child.simplify()
+        i = 0
+        while i < len(self.children):
+            self.children[i] = self.children[i].simplify()
+            i += 1
+        return self
 
     def insert(self, node):
         if len(self.children) < self.arguments:
@@ -45,7 +48,7 @@ class Node:
         return True
 
     def __str__(self):
-        if self.arguments == 2:
+        if len(self.children) == 2:
             if self.show_implied_parentheses:
                 return "({} {} {})".format(self.first, self.symb, self.last)
             else:

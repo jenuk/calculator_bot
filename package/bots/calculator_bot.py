@@ -28,15 +28,16 @@ class CalculatorBot(BasicBot):
                     file.write("{}: {}\n".format(message["from"]["id"], message["text"][9:]))
             elif message["text"].startswith("/debug"):
                 try:
-                    num, tree = self.calculate(message["text"][7:])
+                    tree = parse(message["text"][7:])
+                    tree.simplify()
+                    num = tree.apply()
                 except (ArithmeticError, TypeError) as e:
                     options["text"] = "There was an error while evaulating your expression: {}".format(e)
                     self.send_message(**options)
                     return False
 
-                tree.simplify()
                 draw(tree)
-                options["caption"] = f"{message['text'][7:]} = {num}"
+                options["caption"] = f"{str(tree)} = {num}"
                 self.send_photo("graph.png", **options)
                 return True
             else:
