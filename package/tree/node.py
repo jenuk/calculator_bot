@@ -16,6 +16,10 @@ class Node:
     def apply(self):
         raise NotImplementedError()
 
+    def simplify(self):
+        for child in self.children:
+            child.simplify()
+
     def insert(self, node):
         if len(self.children) < self.arguments:
             self.children.append(node)

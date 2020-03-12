@@ -34,6 +34,7 @@ class CalculatorBot(BasicBot):
                     self.send_message(**options)
                     return False
 
+                tree.simplify()
                 draw(tree)
                 options["caption"] = f"{message['text'][7:]} = {num}"
                 self.send_photo("graph.png", **options)
