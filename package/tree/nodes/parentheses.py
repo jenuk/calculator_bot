@@ -1,4 +1,5 @@
 from ..node import Node
+from .number import NumberNode
 
 class ParenthesesNode(Node):
     symb = "( )"
@@ -12,6 +13,13 @@ class ParenthesesNode(Node):
 
     def apply(self):
         return self.first.apply()
+
+    def simplify(self):
+        self.first = self.first.simplify()
+        if type(self.first) == NumberNode:
+            return self.first
+        else:
+            return self
 
     def __str__(self):
         if self.is_root:

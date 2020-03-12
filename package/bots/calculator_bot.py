@@ -29,7 +29,7 @@ class CalculatorBot(BasicBot):
             elif message["text"].startswith("/debug"):
                 try:
                     tree = parse(message["text"][7:])
-                    tree.simplify()
+                    tree = tree.simplify()
                     num = tree.apply()
                 except (ArithmeticError, TypeError) as e:
                     options["text"] = "There was an error while evaulating your expression: {}".format(e)
