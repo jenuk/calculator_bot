@@ -27,17 +27,16 @@ class CalculatorBot(BasicBot):
                 with open("suggestions.txt", "a") as file:
                     file.write("{}: {}\n".format(message["from"]["id"], message["text"][9:]))
             elif message["text"].startswith("/debug"):
-                try:
-                    tree = parse(message["text"][7:])
-                    tree = tree.simplify()
-                    num = tree.apply()
-                except (ArithmeticError, TypeError) as e:
-                    options["text"] = "There was an error while evaulating your expression: {}".format(e)
-                    self.send_message(**options)
-                    return False
-
+                tree = parse(message["text"][7:])
+                tree = tree.simplify()
                 draw(tree)
-                options["caption"] = f"{str(tree)} = {num}"
+                options["caption"] = f"{str(tree)}"
+                try:
+                    num = tree.apply()
+                    options["caption"] += f" = {num}"
+                except (ArithmeticError, TypeError) as e:
+                    options["caption"] += "\nThere was an error while evaulating your expression: {}".format(e)
+
                 self.send_photo("graph.png", **options)
                 return True
             else:
